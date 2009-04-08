@@ -5,7 +5,7 @@
 ;; Copyright (c) 2006-2009 Paul Ward <asmodai@gmail.com>
 
 ;; Version:    1.0
-;; Time-stamp: <Wednesday Apr  8, 2009 05:43:54 asmodai>
+;; Time-stamp: <Wednesday Apr  8, 2009 06:21:50 asmodai>
 
 ;; Author:     Paul Ward <asmodai@gmail.com>
 ;; Maintainer: Paul Ward <asmodai@gmail.com>
@@ -63,7 +63,7 @@ Lisp implementation, and software and machine types."
     :components
     ((:module :src
               :components
-	      ((:file "cl-lisp")))))
+              ((:file "cl-lisp")))))
 
 ;; ===================================================================
 ;; }}}

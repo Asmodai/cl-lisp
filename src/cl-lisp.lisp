@@ -5,7 +5,7 @@
 ;; Copyright (c) 2006-2009 Paul Ward <asmodai@gmail.com>
 
 ;; Version:    1.0
-;; Time-stamp: <Wednesday Apr  8, 2009 05:42:47 asmodai>
+;; Time-stamp: <Wednesday Apr  8, 2009 06:21:31 asmodai>
 
 ;; Author:     Paul Ward <asmodai@gmail.com>
 ;; Maintainer: Paul Ward <asmodai@gmail.com>
@@ -341,102 +341,103 @@ This is trying to be portable, but there are a few Lisp implementations
 that I don't have.  Your mileage may vary."
   ;; }}}
   (string-trim '(#\Newline)
-	       (with-output-to-string (s)
-		 ;; {{{ Armed Bear:
-		 #+abcl			; in run-shell-command.abcl
-		 (extensions:run-shell-command
-		  (join-cmd-and-args cmd args)
-		  :output s)
-		 ;; }}}
-		 ;; {{{ Steel Bank
-		 #+sbcl
-		 (sb-ext:run-program
-		  cmd args
-		  :input nil :output s)
-		 ;; }}}
-		 ;; {{{ CMU or Scieneer:
-		 #+(or cmu scl)
-		 (ext:run-program
-		  cmd args
-		  :input nil :output s)
-		 ;; }}}
-		 ;; {{{ Franz Allegro on UNIX:
-		 #+(and allegro unix)
-		 (multiple-value-bind (out err pid)
-		     (excl:run-shell-command
-		      (join-cmd-and-args cmd args)
-		      :output :stream
-		      :wait nil)
-		   (write-string (read-line out) s))
-		 ;; }}}
-		 ;; {{{ LispWorks on UNIX:
-		 #+(and lispworks unix)
-		 (multiple-value-bind (out err pid)
-		     (system:run-shell-command
-		      (join-cmd-and-args cmd args)
-		      :wait nil
-		      :output :stream
-		      :error-output :stream)
-		   (write-string  (read-line out) s))
-		 ;; }}}
-		 ;; {{{ CLISP on UNIX:
-		 #+(and clisp unix)	; from runprog.lisp
-		 (let ((out
-			(ext:run-program
-			 cmd
-			 :arguments args
-			 :output :stream
-			 :wait nil)))
-		   (write-string (read-line out) s))
-		 ;; }}}
-		 ;; {{{ OpenMCL:
-		 #+openmcl
-		 (nth-value 1
-			    (ccl:run-program "/bin/sh"
-					     (append '("-c")
-                                                     (list (join-cmd-and-args cmd args)))
-					     :input nil
-					     :output s
-					     :wait t))
-		 ;; }}}
-		 ;; {{{ ECL:
-		 #+ecl			; from unixsys.d
-		 (let ((out
-			(ext:run-program
-			 cmd
-			 args
-			 :output :stream
-			 :error :stream)))
-		   (write-string (read-line out) s))
-		 ;; }}}
-		 ;; {{{ Poplog:
-		 #+poplog		; from contrib.lsp et al
-		 (progn
-		   (pushnew "$popcontrib/lisp/modules/"
-			    poplog:*module-directory-list* :test #'equal)
-		   (require "run-unix-program.lsp")
-		   (multiple-value-bind (out err pid)
-		       (poplog:run-unix-program cmd
-						:args args
-						:output :stream
-						:error-output :stream)
-		     (write-string (read-line out) s)))
-		 ;; }}}
-		 ;; {{{ GCL:
-		 #+(and gcl unix)	; from gcl-si.dvi
-		 (let ((out (si:run-process
-			     "/bin/sh"
-			     (append
-			      '("-c")
-			      (list (join-cmd-and-args cmd args))))))
-		   (write-string (read-line out) s))
-		 ;; }}}
-		 ;; {{{ Unknown:
-		 #-(or abcl sbcl cmu scl allegro lispworks clisp
-		       openmcl ecl poplog gcl)
-		 (error "RUN-PROGRAM is not implemented.")
-		 ;; }}}
-		 )))
+               (with-output-to-string (s)
+                 ;; {{{ Armed Bear:
+                 #+abcl			; in run-shell-command.abcl
+                 (extensions:run-shell-command
+                  (join-cmd-and-args cmd args)
+                  :output s)
+                 ;; }}}
+                 ;; {{{ Steel Bank
+                 #+sbcl
+                 (sb-ext:run-program
+                  cmd args
+                  :input nil :output s)
+                 ;; }}}
+                 ;; {{{ CMU or Scieneer:
+                 #+(or cmu scl)
+                 (ext:run-program
+                  cmd args
+                  :input nil :output s)
+                 ;; }}}
+                 ;; {{{ Franz Allegro on UNIX:
+                 #+(and allegro unix)
+                 (multiple-value-bind (out err pid)
+                     (excl:run-shell-command
+                      (join-cmd-and-args cmd args)
+                      :output :stream
+                      :wait nil)
+                   (write-string (read-line out) s))
+                 ;; }}}
+                 ;; {{{ LispWorks on UNIX:
+                 #+(and lispworks unix)
+                 (multiple-value-bind (out err pid)
+                     (system:run-shell-command
+                      (join-cmd-and-args cmd args)
+                      :wait nil
+                      :output :stream
+                      :error-output :stream)
+                   (write-string  (read-line out) s))
+                 ;; }}}
+                 ;; {{{ CLISP on UNIX:
+                 #+(and clisp unix)	; from runprog.lisp
+                 (let ((out
+                        (ext:run-program
+                         cmd
+                         :arguments args
+                         :output :stream
+                         :wait nil)))
+                   (write-string (read-line out) s))
+                 ;; }}}
+                 ;; {{{ OpenMCL:
+                 #+openmcl
+                 (nth-value 1
+                            (ccl:run-program
+                             "/bin/sh"
+                             (append  '("-c")
+                                      (list (join-cmd-and-args cmd args)))
+                             :input nil
+                             :output s
+                             :wait t))
+                 ;; }}}
+                 ;; {{{ ECL:
+                 #+ecl			; from unixsys.d
+                 (let ((out
+                        (ext:run-program
+                         cmd
+                         args
+                         :output :stream
+                         :error :stream)))
+                   (write-string (read-line out) s))
+                 ;; }}}
+                 ;; {{{ Poplog:
+                 #+poplog		; from contrib.lsp et al
+                 (progn
+                   (pushnew "$popcontrib/lisp/modules/"
+                            poplog:*module-directory-list* :test #'equal)
+                   (require "run-unix-program.lsp")
+                   (multiple-value-bind (out err pid)
+                       (poplog:run-unix-program cmd
+                                                :args args
+                                                :output :stream
+                                                :error-output :stream)
+                     (write-string (read-line out) s)))
+                 ;; }}}
+                 ;; {{{ GCL:
+                 #+(and gcl unix)	; from gcl-si.dvi
+                 (let ((out (si:run-process
+                             "/bin/sh"
+                             (append
+                              '("-c")
+                              (list (join-cmd-and-args cmd args))))))
+                   (write-string (read-line out) s))
+                 ;; }}}
+                 ;; {{{ Unknown:
+                 #-(or abcl sbcl cmu scl allegro lispworks clisp
+                       openmcl ecl poplog gcl)
+                 (error "RUN-PROGRAM is not implemented.")
+                 ;; }}}
+                 )))
 
 ;; }}}
 ;; -------------------------------------------------------------------
@@ -471,34 +472,34 @@ Notes:
 None."
   ;; }}}
   (let ((lispm
-	 #+abcl "Armed Bear Common Lisp"
-	 #+(and akcl (not gcl)) "Austin Kyoto Common Lisp"
-	 #+allegro "Franz Allegro Common Lisp"
-	 #+clisp "GNU Common Lisp (CLISP)"
-	 #+CLOE-Runtime "Symbolics CLOE"
-	 #+cmu "CMU Common Lisp"
-	 #+cormanlisp "Corman Common Lisp"
-	 #+ecl "Embeddable Common Lisp"
-	 #+(and excl (not allegro)) "Franz Common Lisp"
-	 #+gcl "GNU Common Lisp (GCL)"
-	 #+gclisp "Gold Hill Golden Common Lisp"
-	 #+genera "Symbolics Genera"
-	 #+hp-hplabs "HP Common Lisp"
-	 #+ibcl "Ibuki Common Lisp"
-	 #+imach "Symbolics Ivory"
-	 #+(and kcl (not gcl akcl)) "Kyoto Common Lisp"
-	 #+lispworks "LispWorks Common Lisp"
-	 #+Lucid "Lucid Common Lisp"
-	 #+mcl "Mac Common Lisp"
-	 #+openmcl "Clozure Common Lisp"
-	 #+poplog "Sussex Poplog Common Lisp"
-	 #+pyramid "Pyramid Common Lisp"
-	 #+sbcl "Steel Bank Common Lisp"
-	 #+scl "Scieneer Common Lisp"
-	 #+ti "Texas Instruments Common Lisp"
-	 #+(and xerox medley) "Xerox InterLisp (Venue Medley)"
-	 #+(and xerox (not MEDLEY)) "Xerox InterLisp"
-	 ))
+         #+abcl "Armed Bear Common Lisp"
+         #+(and akcl (not gcl)) "Austin Kyoto Common Lisp"
+         #+allegro "Franz Allegro Common Lisp"
+         #+clisp "GNU Common Lisp (CLISP)"
+         #+CLOE-Runtime "Symbolics CLOE"
+         #+cmu "CMU Common Lisp"
+         #+cormanlisp "Corman Common Lisp"
+         #+ecl "Embeddable Common Lisp"
+         #+(and excl (not allegro)) "Franz Common Lisp"
+         #+gcl "GNU Common Lisp (GCL)"
+         #+gclisp "Gold Hill Golden Common Lisp"
+         #+genera "Symbolics Genera"
+         #+hp-hplabs "HP Common Lisp"
+         #+ibcl "Ibuki Common Lisp"
+         #+imach "Symbolics Ivory"
+         #+(and kcl (not gcl akcl)) "Kyoto Common Lisp"
+         #+lispworks "LispWorks Common Lisp"
+         #+Lucid "Lucid Common Lisp"
+         #+mcl "Mac Common Lisp"
+         #+openmcl "Clozure Common Lisp"
+         #+poplog "Sussex Poplog Common Lisp"
+         #+pyramid "Pyramid Common Lisp"
+         #+sbcl "Steel Bank Common Lisp"
+         #+scl "Scieneer Common Lisp"
+         #+ti "Texas Instruments Common Lisp"
+         #+(and xerox medley) "Xerox InterLisp (Venue Medley)"
+         #+(and xerox (not MEDLEY)) "Xerox InterLisp"
+         ))
     lispm))
 	 
 ;; }}}
@@ -538,19 +539,19 @@ GNU (Kyoto) Common Lisp (a.k.a GCL) seems to have both :LINUX and
 present in BSD."
   ;; }}}
   (let ((os #+(and linux (not gcl)) "Linux"
-	    #+sunos "SunOS"
-	    #+osf1 "OSF/1"
-	    #+(and gcl linux bsd) "Linux"
-	    #+(and gcl bsd (not linux)) "BSD"
-	    #+darwin "Darwin"
-	    #+freebsd "FreeBSD"
-	    #+openbsd "OpenBSD"
-	    #+netbsd "NetBSD"
-	    #+mswindows "Microsoft Windows"
-	    #+(and unix (not (or bsd linux sunos osd1 darwin
-				 freebsd openbsd netbsd)))
-	    "UNIX"
-	    ))
+            #+sunos "SunOS"
+            #+osf1 "OSF/1"
+            #+(and gcl linux bsd) "Linux"
+            #+(and gcl bsd (not linux)) "BSD"
+            #+darwin "Darwin"
+            #+freebsd "FreeBSD"
+            #+openbsd "OpenBSD"
+            #+netbsd "NetBSD"
+            #+mswindows "Microsoft Windows"
+            #+(and unix (not (or bsd linux sunos osd1 darwin
+                                 freebsd openbsd netbsd)))
+            "UNIX"
+            ))
     os))
 
 (defun common-software-version ()
@@ -621,11 +622,11 @@ None."
   ;; }}}
   #+(and linux (not abcl))
   (with-open-file (stream "/proc/cpuinfo"
-		   :if-does-not-exist nil)
+                          :if-does-not-exist nil)
     (loop with line while (setf line (read-line stream nil))
-	when (eql (search "model name" line) 0)
-	return (string-trim " " (subseq line
-					(1+ (position #\: line))))))
+          when (eql (search "model name" line) 0)
+          return (string-trim " " (subseq line
+                                          (1+ (position #\: line))))))
   #+abcl
   (java:jstatic "getProperty" "java.lang.System" "java.version")
   #+darwin
@@ -667,7 +668,7 @@ None."
   ;; }}}
   (or *machine-version*
       (setf *machine-version*
-	(get-machine-version))))
+            (get-machine-version))))
 
 (defun get-machine-type ()
   ;; {{{ Documentation:
@@ -693,7 +694,7 @@ None."
     #+abcl
     (setf mtype "Java Virtual Machine")
     #+(or x86 pc386 pc iapx386 i386 i486 i586 i686 pentium
-	  pentiummmx pentiumpro pentium2 pentium3 pentium4)
+          pentiummmx pentiumpro pentium2 pentium3 pentium4)
     (setf mtype "x86")
     #+(or x86_64 x86-64)
     (setf mtype "x86-64")
@@ -727,7 +728,7 @@ None."
   ;; }}}
   (or *machine-type*
       (setf *machine-type*
-	(get-machine-type))))
+            (get-machine-type))))
 
 ;; }}}
 ;; -------------------------------------------------------------------
